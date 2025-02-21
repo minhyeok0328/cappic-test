@@ -1,0 +1,47 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+env/
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+*.whl
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# IDE / Editor settings
+.vscode/
+.idea/
+
+# Logs and databases
+*.log
+*.sqlite3
+
+# Environment variables
+.env
+.env.*
+
+# Testing
+.coverage
+.tox/
+.pytest_cache/
+
+# MyPy
+.mypy_cache/
+
+# Profiling data
+*.prof
+
+# Docker
+docker-compose.override.yml
+
+# Other
+.DS_Store
+Thumbs.db
