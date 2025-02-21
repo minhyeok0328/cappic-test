@@ -1,36 +1,93 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Image Upscaler</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이미지 업스케일링 테스트</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            color: #333;
+        }
+        input[type="file"] {
+            margin: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .hide {
+            display: none;
+        }
+    </style>
 </head>
 <body>
+    <h1>Image Upscaling Service</h1>
     <form id="uploadForm" enctype="multipart/form-data">
-        <input type="file" name="file" id="imageInput" accept="image/*">
-        <button type="submit">Upscale Image</button>
+        <input type="file" id="imageInput" name="file" accept="image/*" required>
+        <button type="submit">Upload and Upscale</button>
     </form>
-    <div id="result"></div>
+
+    <a href="" class="link hide">업스케일링 이미지 결과물</a>
 
     <script>
-        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const formData = new FormData();
+        document.getElementById('uploadForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const $link = document.querySelector('.link');
+
+            // 확인 메시지 표시
+            if (!confirm('높은 해상도 이미지는 시간이 오래 걸릴 수 있습니다. 진행하시겠습니까?')) {
+                return;
+            }
+
+            $link.classList.add('hide');
+
             const fileInput = document.getElementById('imageInput');
-            formData.append('file', fileInput.files[0]);
+            const file = fileInput.files[0];
+            if (!file) {
+                alert('이미지를 선택해주세요.');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
 
             try {
-                const response = await fetch('/upscaling-image', {
+                const response = await fetch('/upscaling', {
                     method: 'POST',
                     body: formData
                 });
-                const data = await response.json();
-                
-                if (data.upscaling_image) {
-                    const img = document.createElement('img');
-                    img.src = `/output/${data.upscaling_image}`;
-                    document.getElementById('result').appendChild(img);
+
+                if (!response.ok) {
+                    throw new Error('업스케일링 실패');
                 }
+
+                const result = await response.json();
+                const imageUrl = result.upscaling_image_src;
+
+                // 새 창에서 결과 이미지 열기
+                window.open(imageUrl, '_blank');
+                $link.classList.remove('hide')
+                $link.setAttribute('href', imageUrl);
             } catch (error) {
-                console.error('Error:', error);
+                alert('오류 발생: ' + error.message);
             }
         });
     </script>
