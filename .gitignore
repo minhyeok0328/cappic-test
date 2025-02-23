@@ -45,3 +45,4 @@ docker-compose.override.yml
 # Other
 .DS_Store
 Thumbs.db
+output/
